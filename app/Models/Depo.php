@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Depo extends Model
 {
+    use HasFactory;
+
     protected $guarded = ['id'];
     protected $casts = [
         'is_utama' => 'boolean'
