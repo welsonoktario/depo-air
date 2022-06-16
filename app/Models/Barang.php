@@ -11,8 +11,8 @@ class Barang extends Model
 
     protected $guarded = ['id'];
 
-    public function pesanans()
+    public function transaksis()
     {
-        return $this->belongsToMany(Pesanan::class, 'pesanan_details')->withPivot(['jumlah']);
+        return $this->belongsToMany(Transaksi::class, 'pesanan_details')->withPivot(['jumlah']);
     }
 }

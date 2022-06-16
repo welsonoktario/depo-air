@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\User;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class DepoController extends Controller
@@ -58,22 +59,18 @@ class DepoController extends Controller
         DB::beginTransaction();
 
         try {
-            $depo = new Depo();
-            $depo->user_id = $request->depo_user;
-            $depo->nama = $request->depo_nama;
-            $depo->alamat = $request->depo_alamat;
-            $depo->lokasi = new Point($request->depo_lokasi_long, $request->depo_lokasi_lat);
-            $depo->is_utama = $request->depo_is_utama;
+            $user = User::query()->create([
+                'nama' => $request->user_nama,
+                'email' => $request->user_email,
+                'password' => bcrypt($request->user_password),
+            ]);
 
-            if ($request->buat_admin) {
-                $user = User::query()->create([
-                    'nama' => $request->user_nama,
-                    'email' => $request->user_email,
-                    'password' => bcrypt($request->user_password)
-                ]);
-
-                $depo->user_id = $user->id;
-            }
+            $user->depo()->create([
+                'nama' => $request->depo_nama,
+                'alamat' => $request->depo_alamat,
+                'lokasi' => new Point($request->depo_lokasi_lat, $request->depo_lokasi_long),
+                'tipe' => $request->depo_tipe,
+            ]);
 
             DB::commit();
 
@@ -83,10 +80,11 @@ class DepoController extends Controller
             ]);
         } catch (Throwable $e) {
             DB::rollBack();
+            Log::error($e->getMessage());
 
             return Redirect::route('depo.index')->with([
                 'status' => 'Error',
-                'msg' => $e->getMessage
+                'msg' => $e->getMessage()
             ]);
         }
     }
@@ -99,6 +97,7 @@ class DepoController extends Controller
      */
     public function show(Depo $depo)
     {
+        $depo->load('user');
         return View::make('depo.show', compact('depo'));
     }
 
@@ -127,9 +126,12 @@ class DepoController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->all();
-            $data['lokasi'] = new Point($request->lokasi->lat, $request->lokasi->long);
-            $depo->update($data);
+            $depo->update([
+                'nama' => $request->depo_nama,
+                'alamat' => $request->depo_alamat,
+                'lokasi' => new Point($request->depo_lokasi_lat, $request->depo_lokasi_long),
+                'tipe' => $request->depo_tipe,
+            ]);
 
             DB::commit();
 
@@ -142,7 +144,7 @@ class DepoController extends Controller
 
             return Redirect::route('depo.index')->with([
                 'status' => 'Error',
-                'msg' => $e->getMessage
+                'msg' => $e->getMessage()
             ]);
         }
     }
@@ -171,7 +173,7 @@ class DepoController extends Controller
 
             return Redirect::route('depo.index')->with([
                 'status' => 'Error',
-                'msg' => $e->getMessage
+                'msg' => $e->getMessage()
             ]);
         }
     }

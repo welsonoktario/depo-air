@@ -18,6 +18,6 @@ class Kurir extends Model
 
     public function pesanan()
     {
-        return $this->hasMany(Pesanan::class);
+        return $this->hasMany(Transaksi::class);
     }
 }

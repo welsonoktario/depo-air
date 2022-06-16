@@ -20,7 +20,8 @@ return new class extends Migration {
             $table->string('nama');
             $table->text('alamat');
             $table->point('lokasi');
-            $table->boolean('is_utama')->default(0);
+            $table->enum('tipe_cabang', ['Cabang Utama', 'Cabang Pembantu'])
+                ->default('Cabang Pembantu');
             $table->timestamps();
         });
     }
