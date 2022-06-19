@@ -1,0 +1,74 @@
+<x-app-layout>
+  <x-slot name="header">
+    <h2 class="text-xl font-semibold leading-tight text-gray-800">
+      {{ __('Transaksi') }}
+    </h2>
+  </x-slot>
+
+  <div class="py-12" x-data="transaksi">
+    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+        <div class="border-b border-gray-200 bg-white p-6">
+          <div class="grid grid-cols-4 gap-8">
+            <template x-for="(transaksi, index) in transaksis" :key="index">
+              <div class="bg-indigo-400 p-4 shadow-sm sm:rounded-lg">
+                <p class="text-lg font-semibold tracking-tighter" x-text="transaksi.customer.user.nama"></p>
+                <div class="mt-4 flex flex-row justify-start gap-2">
+                  <template x-if="transaksi.status == 'Menunggu Pembayaran'">
+                    <x-button class="text-xs" @click="proses(transaksi.id, index)">Proses</x-button-link>
+                  </template>
+                  <template x-if="transaksi.status != 'Menunggu Pembayaran'">
+                    <x-button-link class="text-xs" x-bind:href="route('transaksi.show', transaksi.id)" target="_blank">
+                      Detail
+                    </x-button-link>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @push('scripts')
+    <script>
+      Alpine.data("transaksi", () => ({
+        transaksis: [],
+        init() {
+          const id = {{ auth()->user()->depo->id }};
+          this.transaksis = {{ Js::from($transaksis) }};
+          Echo.channel(`depo.${id}`)
+            .listen("TransaksiCreated", (data) => this.transaksis.unshift(data.transaksi));
+        },
+        async proses(transaksi, index) {
+          const url = route("transaksi.update", {
+            transaksi
+          });
+          const res = await fetch(url, {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": "{{ csrf_token() }}",
+            },
+            method: "PATCH",
+            body: JSON.stringify({
+              aksi: "Diproses",
+            }),
+          });
+          const {
+            status
+          } = await res.json();
+
+          if (status == "OK") {
+            this.transaksis[index].status = "Diproses";
+          }
+        },
+      }));
+
+      Alpine.start();
+    </script>
+  @endpush
+
+</x-app-layout>

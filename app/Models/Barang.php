@@ -13,6 +13,6 @@ class Barang extends Model
 
     public function transaksis()
     {
-        return $this->belongsToMany(Transaksi::class, 'pesanan_details')->withPivot(['jumlah']);
+        return $this->belongsToMany(Transaksi::class, 'transaksi_details')->withPivot(['jumlah']);
     }
 }

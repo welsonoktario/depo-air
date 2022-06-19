@@ -25,6 +25,6 @@ class Transaksi extends Model
 
     public function barangs()
     {
-        return $this->belongsToMany(Barang::class, 'pesanan_details')->withPivot(['jumlah']);
+        return $this->belongsToMany(Barang::class, 'transaksi_details')->withPivot(['jumlah']);
     }
 }

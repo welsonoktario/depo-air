@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Depo;
 use Illuminate\Support\Facades\DB;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Depo>
@@ -30,7 +31,7 @@ class DepoFactory extends Factory
             'user_id' => User::factory()->create(['role' => 'Admin'])->id,
             'nama' => $this->faker->word,
             'alamat' => $this->faker->streetName(),
-            'lokasi' => DB::raw("ST_GeomFromText('POINT({$this->faker->randomFloat(2, -90, 90)} {$this->faker->randomFloat(2, -90, 90)})')"),
+            'lokasi' => new Point($this->faker->randomFloat(2, -90, 90), $this->faker->randomFloat(2, -90, 90)),
         ];
     }
 }

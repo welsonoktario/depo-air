@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\DepoController;
+use App\Http\Controllers\Web\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +25,9 @@ Route::group(['middleware' => ['auth']], function () {
     })->name('dashboard');
 
     Route::resources([
-        'depo' => DepoController::class
+        'depo' => DepoController::class,
+        'transaksi' => TransaksiController::class,
     ]);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

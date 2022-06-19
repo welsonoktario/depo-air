@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Customer;
-use Illuminate\Support\Facades\DB;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Customer>
@@ -29,7 +29,7 @@ class CustomerFactory extends Factory
         return [
             'user_id' => User::factory()->create(['role' => 'Customer'])->id,
             'alamat' => $this->faker->address(),
-            'lokasi' => DB::raw("ST_GeomFromText('POINT({$this->faker->randomFloat(2, -90, 90)} {$this->faker->randomFloat(2, -90, 90)})')"),
+            'lokasi' => new Point($this->faker->randomFloat(2, -90, 90), $this->faker->randomFloat(2, -90, 90)),
         ];
     }
 }
