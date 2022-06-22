@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use MatanYadaev\EloquentSpatial\SpatialBuilder;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
+/**
+ * @property \MatanYadaev\EloquentSpatial\Objects\Point $lokasi
+ * @method static SpatialBuilder query()
+ */
 class Customer extends Model
 {
     use HasFactory;

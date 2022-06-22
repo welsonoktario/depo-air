@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\TransaksiController as APITransaksiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\DepoController;
 use App\Http\Controllers\Web\TransaksiController;
@@ -18,6 +19,8 @@ use App\Http\Controllers\Web\TransaksiController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test', [APITransaksiController::class, 'store']);
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', function () {

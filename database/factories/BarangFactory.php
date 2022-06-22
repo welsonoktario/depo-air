@@ -27,7 +27,6 @@ class BarangFactory extends Factory
         return [
             'nama' => $this->faker->word(),
             'harga' => $this->faker->randomNumber(5, true),
-            'stok' => $this->faker->randomNumber(3, true),
         ];
     }
 }

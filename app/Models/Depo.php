@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\SpatialBuilder;
 
+/**
+ * @property \MatanYadaev\EloquentSpatial\Objects\Point $lokasi
+ * @method static SpatialBuilder query()
+ */
 class Depo extends Model
 {
     use HasFactory;
@@ -29,6 +33,12 @@ class Depo extends Model
     public function kurirs()
     {
         return $this->hasMany(Kurir::class);
+    }
+
+    public function barangs()
+    {
+        return $this->belongsToMany(Barang::class, 'depo_barangs')
+            ->withPivot('stok');
     }
 
     public function transaksis()

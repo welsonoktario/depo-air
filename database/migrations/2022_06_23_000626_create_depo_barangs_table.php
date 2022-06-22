@@ -12,23 +12,15 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('transaksis', function (Blueprint $table) {
-            $table->id();
+        Schema::create('depo_barangs', function (Blueprint $table) {
             $table->foreignId('depo_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->foreignId('customer_id')
+            $table->foreignId('barang_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->foreignId('kurir_id')
-                ->nullable()
-                ->constrained()
-                ->cascadeOnDelete();
-            $table->dateTime('tanggal')
-                ->useCurrent();
-            $table->enum('status', ['Menunggu Pembayaran', 'Diproses', 'Dikirim', 'Selesai'])
-                ->default('Menunggu Pembayaran');
-            $table->timestamps();
+            $table->integer('stok')
+                ->default(0);
         });
     }
 
@@ -39,6 +31,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('transaksis');
+        Schema::dropIfExists('depo_barangs');
     }
 };
