@@ -11,6 +11,11 @@ class Barang extends Model
 
     protected $guarded = ['id'];
 
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class);
+    }
+
     public function depos()
     {
         return $this->belongsToMany(Depo::class, 'depo_barangs');
@@ -19,5 +24,10 @@ class Barang extends Model
     public function transaksis()
     {
         return $this->belongsToMany(Transaksi::class, 'transaksi_details')->withPivot(['jumlah']);
+    }
+
+    public function customers()
+    {
+        return $this->belongsToMany(Customer::class, 'customer_barangs')->withPivot(['jumlah']);
     }
 }

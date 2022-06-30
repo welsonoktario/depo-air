@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\KategoriCollection;
 use App\Models\Barang;
-use App\Models\Kategori;
+use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Response;
+use Throwable;
 
-class BarangController extends Controller
+class KeranjangController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +20,8 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barangs = Kategori::with('barangs')->get();
-
-        return new KategoriCollection($barangs);
+        $user = Auth::user();
+        Log::debug($user);
     }
 
     /**
@@ -40,7 +42,22 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Log::debug($request->all());
+        $customer = Auth::user()->customer;
+
+        try {
+            DB::beginTransaction();
+
+            $customer->barangs()->sync([
+                $request->barang => ['jumlah' => $request->jumlah],
+            ], false);
+
+            DB::commit();
+        } catch (Throwable $e) {
+            return abort(500, $e->getMessage());
+        }
+
+        return Response::json(['msg' => 'OK']);
     }
 
     /**
@@ -74,7 +91,22 @@ class BarangController extends Controller
      */
     public function update(Request $request, Barang $barang)
     {
-        //
+        $barang = Barang::find($request->barang);
+        $customer = Auth::user()->customer;
+
+        try {
+            DB::beginTransaction();
+
+            $barang->customers()->sync([
+                $customer->id => ['jumlah' => $request->jumlah]
+            ], false);
+
+            DB::commit();
+        } catch (Throwable $e) {
+            return abort(500, $e->getMessage());
+        }
+
+        return Response::json(['msg' => 'OK']);
     }
 
     /**

@@ -34,4 +34,9 @@ class Customer extends Model
     {
         return $this->hasMany(Transaksi::class)->with('barangs');
     }
+
+    public function barangs()
+    {
+        return $this->belongsToMany(Barang::class, 'customer_barangs')->withPivot(['jumlah']);
+    }
 }

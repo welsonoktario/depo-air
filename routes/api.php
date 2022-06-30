@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BarangController;
 use App\Http\Controllers\API\DepoController;
+use App\Http\Controllers\API\KeranjangController;
 use App\Http\Controllers\API\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,8 +22,9 @@ Route::group(['prefix' => 'auth', 'as' => 'api.'], function () {
     Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 });
 
-Route::group(['middleware' => [], 'as' => 'api.'], function () {
+Route::group(['middleware' => ['auth:sanctum'], 'as' => 'api.'], function () {
     Route::apiResource('barang', BarangController::class);
     Route::apiResource('depo', DepoController::class);
     Route::apiResource('transaksi', TransaksiController::class);
+    Route::apiResource('keranjang', KeranjangController::class);
 });

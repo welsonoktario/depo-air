@@ -19,6 +19,7 @@ class BarangResource extends JsonResource
             'nama' => $this->nama,
             'harga' => $this->harga,
             'stok' => $this->whenPivotLoaded('depo_barangs', fn () => $this->pivot->stok),
+            'kategori' => $this->whenPivotLoaded('kategori', fn () => $this->kategori)
         ];
     }
 }

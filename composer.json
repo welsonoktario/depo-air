@@ -12,6 +12,8 @@
         "laravel/tinker": "^2.7",
         "matanyadaev/laravel-eloquent-spatial": "^1.0",
         "pusher/pusher-php-server": "^7.0",
+        "staudenmeir/belongs-to-through": "^2.12",
+        "staudenmeir/eloquent-has-many-deep": "^1.15",
         "tightenco/ziggy": "^1.4"
     },
     "require-dev": {

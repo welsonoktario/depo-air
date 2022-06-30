@@ -27,7 +27,7 @@ class AuthController extends Controller
         }
 
         $user = User::query()
-            ->with('customer')
+            ->with(['customer.barangs.kategori'])
             ->firstWhere('email', $request->email);
 
         if (!$user) {
@@ -36,7 +36,6 @@ class AuthController extends Controller
                 'msg' => 'Email atau password salah'
             ]);
         }
-        Log::debug($user);
 
         if ($user->role == 'Admin' || $user->role == 'Super Admin') {
             return Response::json([
