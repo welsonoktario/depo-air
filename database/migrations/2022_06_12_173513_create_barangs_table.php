@@ -20,6 +20,8 @@ return new class extends Migration {
                 ->cascadeOnDelete();
             $table->string('nama');
             $table->integer('harga');
+            $table->string('gambar')
+                ->nullable();
             $table->timestamps();
         });
     }
