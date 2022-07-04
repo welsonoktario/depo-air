@@ -42,7 +42,6 @@ class KeranjangController extends Controller
      */
     public function store(Request $request)
     {
-        Log::debug($request->all());
         $customer = Auth::user()->customer;
 
         try {

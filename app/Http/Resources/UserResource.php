@@ -18,6 +18,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'nama' => $this->nama,
             'email' => $this->email,
+            'telepon' => $this->telepon,
             'role' => $this->role,
             'customer' => CustomerResource::make($this->whenLoaded('customer'))
         ];
