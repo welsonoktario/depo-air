@@ -16,8 +16,18 @@
             {{ __('Dashboard') }}
           </x-nav-link>
 
+          @if (auth()->user()->role === 'Super Admin')
+            <x-nav-link :href="route('barang.index')" :active="request()->routeIs('barang.index')">
+              {{ __('Barang') }}
+            </x-nav-link>
+          @endif
+
           <x-nav-link :href="route('depo.index')" :active="request()->routeIs('depo.index')">
             {{ __('Depo') }}
+          </x-nav-link>
+
+          <x-nav-link :href="route('inventori.index')" :active="request()->routeIs('inventori.index')">
+            {{ __('Inventori') }}
           </x-nav-link>
 
           <x-nav-link :href="route('transaksi.index')" :active="request()->routeIs('transaksi.index')">
@@ -81,6 +91,16 @@
 
       <x-responsive-nav-link :href="route('depo.index')" :active="request()->routeIs('depo.index')">
         {{ __('Depo') }}
+      </x-responsive-nav-link>
+
+      @if (auth()->user()->role === 'Super Admin')
+        <x-responsive-nav-link :href="route('barang.index')" :active="request()->routeIs('barang.index')">
+          {{ __('Barang') }}
+        </x-responsive-nav-link>
+      @endif
+
+      <x-responsive-nav-link :href="route('inventori.index')" :active="request()->routeIs('inventori.index')">
+        {{ __('Inventori') }}
       </x-responsive-nav-link>
 
       <x-responsive-nav-link :href="route('transaksi.index')" :active="request()->routeIs('transaksi.index')">

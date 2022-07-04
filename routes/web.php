@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\API\TransaksiController as APITransaksiController;
+use App\Http\Controllers\Web\BarangController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\DepoController;
+use App\Http\Controllers\Web\InventoriController;
 use App\Http\Controllers\Web\TransaksiController;
 
 /*
@@ -29,6 +31,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resources([
         'depo' => DepoController::class,
+        'barang' => BarangController::class,
+        'inventori' => InventoriController::class,
         'transaksi' => TransaksiController::class,
     ]);
 });

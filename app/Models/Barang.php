@@ -10,6 +10,9 @@ class Barang extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $casts = [
+        'harga' => 'integer'
+    ];
 
     public function kategori()
     {
