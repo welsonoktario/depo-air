@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Web;
 
 use App\Events\TransaksiUpdated;
 use App\Http\Controllers\Controller;
+use App\Models\Barang;
+use App\Models\Depo;
 use App\Models\Transaksi;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
+use Throwable;
 
 class TransaksiController extends Controller
 {
@@ -62,9 +67,34 @@ class TransaksiController extends Controller
      */
     public function update(Request $request, Transaksi $transaksi)
     {
-        tap($transaksi)->update([
-            'status' => $request->aksi,
-        ]);
+        $transaksi->load(['barangs']);
+        $depo = Depo::with('barangs')
+            ->where('user_id', Auth::id())
+            ->first();
+
+        try {
+            DB::beginTransaction();
+
+            tap($transaksi)->update([
+                'status' => $request->aksi,
+            ]);
+
+            if ($request->aksi == 'Dikirim') {
+                foreach ($transaksi->barangs as $barang) {
+                    $barangDepo = collect($depo->barangs)->firstWhere('id', $barang->id);
+                    Log::debug($barangDepo);
+                    $depo->barangs()->sync([
+                        $barang->id => ['stok' => $barangDepo->pivot->stok - $barang->pivot->jumlah]
+                    ], false);
+                }
+            }
+
+            DB::commit();
+        } catch (Throwable $err) {
+            DB::rollBack();
+
+            return Response::json(['status' => 'GAGAL', 'msg' => $err->getMessage()]);
+        }
 
         broadcast(new TransaksiUpdated($transaksi))->toOthers();
 

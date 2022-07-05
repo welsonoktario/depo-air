@@ -12,13 +12,14 @@
           <div class="grid grid-cols-4 gap-8">
             <template x-for="(transaksi, index) in transaksis" :key="index">
               <div class="bg-indigo-400 p-4 shadow-sm sm:rounded-lg">
+                <p class="mb-4" x-text="createdAt(transaksi)"></p>
                 <p class="text-lg font-semibold tracking-tighter" x-text="transaksi.customer.user.nama"></p>
                 <div class="mt-4 flex flex-row justify-start gap-2">
                   <template x-if="transaksi.status == 'Menunggu Pembayaran'">
                     <x-button class="text-xs" @click="proses(transaksi.id, index)">Proses</x-button-link>
                   </template>
                   <template x-if="transaksi.status != 'Menunggu Pembayaran'">
-                    <x-button-link class="text-xs" x-bind:href="route('transaksi.show', transaksi.id)" target="_blank">
+                    <x-button-link class="text-xs" x-bind:href="route('transaksi.show', transaksi.id)">
                       Detail
                     </x-button-link>
                   </template>
@@ -65,6 +66,20 @@
             this.transaksis[index].status = "Diproses";
           }
         },
+        createdAt(transaksi) {
+          const date = new Date(transaksi.created_at);
+
+          return date.toLocaleString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: false
+          });
+        }
       }));
 
       Alpine.start();

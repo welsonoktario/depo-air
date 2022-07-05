@@ -20,6 +20,7 @@ class TransaksiResource extends JsonResource
             'status' => $this->status,
             'depo' => DepoResource::make($this->whenLoaded('depo')),
             'kurir' => KurirResource::make($this->whenLoaded('kurir')),
+            'details' => KeranjangCollection::make($this->whenLoaded('barangs'))
         ];
     }
 }
