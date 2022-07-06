@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 
-class BarangController extends Controller
+class KategoriController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,11 +17,9 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barangs = Barang::query()
-            ->with('kategori')
-            ->get();
+        $kategoris = Kategori::all();
 
-        return View::make('barang.index', compact('barangs'));
+        return View::make('kategori.index', compact('kategoris'));
     }
 
     /**
@@ -32,9 +29,7 @@ class BarangController extends Controller
      */
     public function create()
     {
-        $kategoris = Kategori::all();
-
-        return View::make('barang.create', compact('kategoris'));
+        return View::make('kategori.create');
     }
 
     /**
@@ -45,22 +40,20 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        Barang::create([
-            'nama' => $request->nama,
-            'harga' => $request->harga,
-            'kategori_id' => $request->kategori
+        $kategori = Kategori::create([
+            'nama' => $request->nama
         ]);
 
-        return Redirect::route('barang.index');
+        return Redirect::route('kategori.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Barang  $barang
+     * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function show(Barang $barang)
+    public function show(Kategori $kategori)
     {
         //
     }
@@ -68,41 +61,37 @@ class BarangController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Barang  $barang
+     * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function edit(Barang $barang)
+    public function edit(Kategori $kategori)
     {
-        $kategoris = Kategori::all();
-
-        return View::make('barang.edit', compact('barang', 'kategoris'));
+        return View::make('kategori.edit', compact('kategori'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Barang  $barang
+     * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Barang $barang)
+    public function update(Request $request, Kategori $kategori)
     {
-        $barang->update([
-            'nama' => $request->nama,
-            'harga' => $request->harga,
-            'kategori_id' => $request->kategori
+        $kategori->update([
+            'nama' => $request->nama
         ]);
 
-        return Redirect::route('barang.index');
+        return Redirect::route('kategori.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Barang  $barang
+     * @param  \App\Models\Kategori  $kategori
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Barang $barang)
+    public function destroy(Kategori $kategori)
     {
         //
     }

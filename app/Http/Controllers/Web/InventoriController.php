@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Depo;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
+use Log;
 
 class InventoriController extends Controller
 {
@@ -20,9 +22,10 @@ class InventoriController extends Controller
     public function index()
     {
         $depo = Auth::user()->depo;
+        $barangsAll = Barang::all();
         $barangs = $depo->load(['barangs'])->barangs;
 
-        return View::make('inventori.index', compact('barangs'));
+        return View::make('inventori.index', compact('barangs', 'barangsAll'));
     }
 
     /**
@@ -67,7 +70,16 @@ class InventoriController extends Controller
      */
     public function edit(Barang $barang)
     {
-        //
+        $barangDepo = Depo::query()
+            ->with(['barangs' => fn ($q) => $q->with('kategori')->where('id', $barang->id)])
+            ->firstWhere('user_id', Auth::id())
+            ->barangs;
+
+        if ($barangDepo->count()) {
+            $barang = $barangDepo[0];
+        }
+
+        return View::make('inventori.edit', compact('barang'));
     }
 
     /**
@@ -83,7 +95,7 @@ class InventoriController extends Controller
 
         $depo->barangs()->sync([$barang->id => ['stok' => $request->stok]], false);
 
-        return Redirect::back();
+        return Redirect::route('inventori.index');
     }
 
     /**

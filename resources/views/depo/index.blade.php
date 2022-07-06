@@ -31,4 +31,9 @@
     </div>
   </div>
 
+  @push('scripts')
+    <script>
+      Alpine.start();
+    </script>
+  @endpush
 </x-app-layout>
