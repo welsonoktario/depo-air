@@ -23,7 +23,12 @@ class InventoriController extends Controller
     {
         $depo = Auth::user()->depo;
         $barangsAll = Barang::all();
-        $barangs = $depo->load(['barangs'])->barangs;
+
+        if ($depo) {
+            $barangs = $depo->load(['barangs'])->barangs;
+        } else {
+            $barangs = [];
+        }
 
         return View::make('inventori.index', compact('barangs', 'barangsAll'));
     }
