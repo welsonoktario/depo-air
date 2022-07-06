@@ -143,7 +143,7 @@ class TransaksiController extends Controller
 
         foreach ($listDepo as $depo) {
             $lokasiDepo = $depo[0]->lokasi;
-            $distance = $this->codexworldGetDistanceOpt(
+            $distance = $this->haversineGreatCircleDistance(
                 $lokasi->latitude,
                 $lokasi->longitude,
                 $lokasiDepo->latitude,
@@ -160,24 +160,33 @@ class TransaksiController extends Controller
     }
 
     /**
-     * Optimized algorithm from http://www.codexworld.com
-     *
-     * @param float $latitudeFrom
-     * @param float $longitudeFrom
-     * @param float $latitudeTo
-     * @param float $longitudeTo
-     *
-     * @return float [km]
+     * Calculates the great-circle distance between two points, with
+     * the Haversine formula.
+     * @param float $latitudeFrom Latitude of start point in [deg decimal]
+     * @param float $longitudeFrom Longitude of start point in [deg decimal]
+     * @param float $latitudeTo Latitude of target point in [deg decimal]
+     * @param float $longitudeTo Longitude of target point in [deg decimal]
+     * @param float $earthRadius Mean earth radius in [m]
+     * @return float Distance between points in [m] (same as earthRadius)
      */
-    public function codexworldGetDistanceOpt($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo)
-    {
-        $rad = M_PI / 180;
-        //Calculate distance from latitude and longitude
-        $theta = $longitudeFrom - $longitudeTo;
-        $dist = sin($latitudeFrom * $rad)
-        * sin($latitudeTo * $rad) +  cos($latitudeFrom * $rad)
-        * cos($latitudeTo * $rad) * cos($theta * $rad);
+    public function haversineGreatCircleDistance(
+        $latitudeFrom,
+        $longitudeFrom,
+        $latitudeTo,
+        $longitudeTo,
+        $earthRadius = 6371000
+    ) {
+        // convert from degrees to radians
+        $latFrom = deg2rad($latitudeFrom);
+        $lonFrom = deg2rad($longitudeFrom);
+        $latTo = deg2rad($latitudeTo);
+        $lonTo = deg2rad($longitudeTo);
 
-        return acos($dist) / $rad * 60 *  1.853;
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+      cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+        return $angle * $earthRadius;
     }
 }
