@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,14 +13,16 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('customer_barangs', function (Blueprint $table) {
+        Schema::create('alamats', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('customer_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->foreignId('barang_id')
-                ->constrained()
-                ->cascadeOnDelete();
-            $table->integer('jumlah')->default(1);
+            $table->string('nama');
+            $table->text('alamat');
+            $table->point('lokasi');
+            $table->boolean('is_utama')->default(0);
+            $table->timestamps();
         });
     }
 
@@ -30,6 +33,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('customer_barangs');
+        Schema::dropIfExists('alamats');
     }
 };
