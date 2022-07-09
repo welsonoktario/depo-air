@@ -19,6 +19,7 @@ class KeranjangResource extends JsonResource
                 'id' => $this->id,
                 'nama' => $this->nama,
                 'harga' => $this->harga,
+                'gambar' => $this->gambar
             ],
             'jumlah' => $this->pivot->jumlah,
             'kategori' => KategoriResource::make($this->whenLoaded('kategori'))

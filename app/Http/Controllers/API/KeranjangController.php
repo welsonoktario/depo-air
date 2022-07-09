@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\KeranjangCollection;
 use App\Models\Barang;
 use DB;
 use Illuminate\Http\Request;
@@ -20,8 +21,10 @@ class KeranjangController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        Log::debug($user);
+        $customer = Auth::user()->customer;
+        $barangs = $customer->barangs;
+
+        return new KeranjangCollection($barangs);
     }
 
     /**
@@ -90,14 +93,14 @@ class KeranjangController extends Controller
      */
     public function update(Request $request, Barang $barang)
     {
-        $barang = Barang::find($request->barang);
         $customer = Auth::user()->customer;
+        Log::debug($barang);
 
         try {
             DB::beginTransaction();
 
-            $barang->customers()->sync([
-                $customer->id => ['jumlah' => $request->jumlah]
+            $customer->barangs()->sync([
+                $barang->id => ['jumlah' => $request->jumlah]
             ], false);
 
             DB::commit();
@@ -116,6 +119,9 @@ class KeranjangController extends Controller
      */
     public function destroy(Barang $barang)
     {
-        //
+        $customer = Auth::user()->customer;
+        $customer->barangs()->detach([$barang->id]);
+
+        return Response::json(['msg' => 'OK']);
     }
 }

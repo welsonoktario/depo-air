@@ -27,5 +27,5 @@ Route::group(['middleware' => ['auth:sanctum'], 'as' => 'api.'], function () {
     Route::apiResource('barang', BarangController::class);
     Route::apiResource('depo', DepoController::class);
     Route::apiResource('transaksi', TransaksiController::class);
-    Route::apiResource('keranjang', KeranjangController::class);
+    Route::apiResource('keranjang', KeranjangController::class)->parameter('keranjang', 'barang');
 });
