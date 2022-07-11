@@ -62,6 +62,7 @@ class DepoController extends Controller
             $user = User::query()->create([
                 'nama' => $request->user_nama,
                 'email' => $request->user_email,
+                'telepon' => $request->user_telepon,
                 'password' => bcrypt($request->user_password),
             ]);
 
@@ -82,10 +83,7 @@ class DepoController extends Controller
             DB::rollBack();
             Log::error($e->getMessage());
 
-            return Redirect::route('depo.index')->with([
-                'status' => 'Error',
-                'msg' => $e->getMessage()
-            ]);
+            return Redirect::back();
         }
     }
 

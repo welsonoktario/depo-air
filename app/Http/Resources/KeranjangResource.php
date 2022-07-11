@@ -22,7 +22,7 @@ class KeranjangResource extends JsonResource
                 'gambar' => $this->gambar
             ],
             'jumlah' => $this->pivot->jumlah,
-            'kategori' => KategoriResource::make($this->whenLoaded('kategori'))
+            'kategori' => $this->whenLoaded('kategori', KategoriResource::make($this->kategori))
         ];
     }
 }

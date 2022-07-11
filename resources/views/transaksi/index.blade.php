@@ -10,21 +10,27 @@
       <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
         <div class="border-b border-gray-200 bg-white p-6">
           <div class="grid grid-cols-4 gap-8">
-            <template x-for="(transaksi, index) in transaksis" :key="index">
-              <div class="bg-indigo-400 p-4 shadow-sm sm:rounded-lg">
-                <p class="mb-4" x-text="createdAt(transaksi)"></p>
-                <p class="text-lg font-semibold tracking-tighter" x-text="transaksi.customer.user.nama"></p>
-                <div class="mt-4 flex flex-row justify-start gap-2">
-                  <template x-if="transaksi.status == 'Menunggu Pembayaran'">
-                    <x-button class="text-xs" @click="proses(transaksi.id, index)">Proses</x-button-link>
-                  </template>
-                  <template x-if="transaksi.status != 'Menunggu Pembayaran'">
-                    <x-button-link class="text-xs" x-bind:href="route('transaksi.show', transaksi.id)">
-                      Detail
-                    </x-button-link>
-                  </template>
+            <template x-if="transaksis.length">
+              <template x-for="(transaksi, index) in transaksis" :key="index">
+                <div class="p-4 shadow-sm sm:rounded-lg">
+                  <p class="mb-4" x-text="createdAt(transaksi)"></p>
+                  <p class="text-lg font-semibold tracking-tighter" x-text="transaksi.customer.user.nama"></p>
+                  <div class="mt-4 flex flex-row justify-start gap-2">
+                    <template x-if="transaksi.status == 'Menunggu Pembayaran'">
+                      <x-button class="text-xs" @click="proses(transaksi.id, index)">Proses</x-button-link>
+                    </template>
+                    <template x-if="transaksi.status != 'Menunggu Pembayaran'">
+                      <x-button-link class="text-xs" x-bind:href="route('transaksi.show', transaksi.id)">
+                        Detail
+                      </x-button-link>
+                    </template>
+                  </div>
                 </div>
-              </div>
+              </template>
+            </template>
+
+            <template x-if="!transaksis.length">
+              <p>Belum ada transaksi</p>
             </template>
           </div>
         </div>

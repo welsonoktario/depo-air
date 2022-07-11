@@ -26,6 +26,7 @@ return new class extends Migration {
                 ->cascadeOnDelete();
             $table->dateTime('tanggal')
                 ->useCurrent();
+            $table->point('lokasi_pengiriman');
             $table->enum('status', ['Menunggu Pembayaran', 'Diproses', 'Dikirim', 'Selesai'])
                 ->default('Menunggu Pembayaran');
             $table->timestamps();

@@ -16,6 +16,10 @@
             {{ __('Dashboard') }}
           </x-nav-link>
 
+          <x-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
+            {{ __('Customer') }}
+          </x-nav-link>
+
           @if (auth()->user()->role === 'Super Admin')
             <x-nav-link :href="route('kategori.index')" :active="request()->routeIs('kategori.index')">
               {{ __('Kategori') }}
@@ -30,13 +34,15 @@
             </x-nav-link>
           @endif
 
-          <x-nav-link :href="route('inventori.index')" :active="request()->routeIs('inventori.index')">
-            {{ __('Inventori') }}
-          </x-nav-link>
+          @if (auth()->user()->role === 'Admin')
+            <x-nav-link :href="route('inventori.index')" :active="request()->routeIs('inventori.index')">
+              {{ __('Inventori') }}
+            </x-nav-link>
 
-          <x-nav-link :href="route('transaksi.index')" :active="request()->routeIs('transaksi.index')">
-            {{ __('Transaksi') }}
-          </x-nav-link>
+            <x-nav-link :href="route('transaksi.index')" :active="request()->routeIs('transaksi.index')">
+              {{ __('Transaksi') }}
+            </x-nav-link>
+          @endif
         </div>
       </div>
 
@@ -93,6 +99,10 @@
         {{ __('Dashboard') }}
       </x-responsive-nav-link>
 
+      <x-responsive-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
+        {{ __('Customer') }}
+      </x-responsive-nav-link>
+
       @if (auth()->user()->role === 'Super Admin')
         <x-responsive-nav-link :href="route('kategori.index')" :active="request()->routeIs('kategori.index')">
           {{ __('Kategori') }}
@@ -107,13 +117,15 @@
         </x-responsive-nav-link>
       @endif
 
-      <x-responsive-nav-link :href="route('inventori.index')" :active="request()->routeIs('inventori.index')">
-        {{ __('Inventori') }}
-      </x-responsive-nav-link>
+      @if (auth()->user()->role === 'Admin')
+        <x-responsive-nav-link :href="route('inventori.index')" :active="request()->routeIs('inventori.index')">
+          {{ __('Inventori') }}
+        </x-responsive-nav-link>
 
-      <x-responsive-nav-link :href="route('transaksi.index')" :active="request()->routeIs('transaksi.index')">
-        {{ __('Transaksi') }}
-      </x-responsive-nav-link>
+        <x-responsive-nav-link :href="route('transaksi.index')" :active="request()->routeIs('transaksi.index')">
+          {{ __('Transaksi') }}
+        </x-responsive-nav-link>
+      @endif
     </div>
 
     <!-- Responsive Settings Options -->

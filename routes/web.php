@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\TransaksiController as APITransaksiController;
 use App\Http\Controllers\Web\BarangController;
+use App\Http\Controllers\Web\CustomerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\DepoController;
 use App\Http\Controllers\Web\InventoriController;
@@ -23,9 +24,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', [APITransaksiController::class, 'store']);
-
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -33,6 +32,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('inventori', InventoriController::class)->parameter('inventori', 'barang');
 
     Route::resources([
+        'customer' => CustomerController::class,
         'depo' => DepoController::class,
         'barang' => BarangController::class,
         'kategori' => KategoriController::class,
