@@ -8,8 +8,6 @@ use App\Http\Resources\KeranjangCollection;
 use App\Models\Barang;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 
 class BarangController extends Controller
 {
@@ -20,13 +18,9 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $keranjangs = Auth::user()->customer->barangs;
         $barangs = Kategori::with('barangs')->get();
 
-        return Response::json([
-            'kategoris' => new KategoriCollection($barangs),
-            'keranjangs' => new KeranjangCollection($keranjangs)
-        ]);
+        return new KategoriCollection($barangs);
     }
 
     /**
