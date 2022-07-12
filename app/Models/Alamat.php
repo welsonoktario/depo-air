@@ -18,6 +18,7 @@ class Alamat extends Model
     protected $guarded = ['id', 'customer_id'];
     protected $casts = [
         'lokasi' => Point::class,
+        'is_utama' => 'boolean'
     ];
 
     public function newEloquentBuilder($query): SpatialBuilder

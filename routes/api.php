@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AlamatController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BarangController;
 use App\Http\Controllers\API\DepoController;
@@ -24,6 +25,7 @@ Route::group(['prefix' => 'auth', 'as' => 'api.'], function () {
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'as' => 'api.'], function () {
+    Route::apiResource('alamat', AlamatController::class);
     Route::apiResource('barang', BarangController::class);
     Route::apiResource('depo', DepoController::class);
     Route::apiResource('transaksi', TransaksiController::class);
