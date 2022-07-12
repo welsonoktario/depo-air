@@ -25,6 +25,8 @@ Route::group(['prefix' => 'auth', 'as' => 'api.'], function () {
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'as' => 'api.'], function () {
+    Route::patch('alamat/{alamat}/utama', [AlamatController::class, 'updateUtama']);
+
     Route::apiResource('alamat', AlamatController::class);
     Route::apiResource('barang', BarangController::class);
     Route::apiResource('depo', DepoController::class);

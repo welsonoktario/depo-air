@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AlamatCollection;
+use App\Http\Resources\AlamatResource;
 use App\Models\Alamat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,14 +53,22 @@ class AlamatController extends Controller
         DB::beginTransaction();
 
         try {
-            $customer->alamats()->create([
+            if ($request->isUtama) {
+                $customer->alamats()->update([
+                    'is_utama' => false
+                ]);
+            }
+
+            $alamat = $customer->alamats()->create([
                 'nama' => $request->nama,
                 'alamat' => $request->alamat,
-                'lokasi' => new Point($request->lokasi->lat, $request->lokasi->lng),
-                'isUtama' => $request->isUtama,
+                'lokasi' => new Point($request->lokasi['lat'], $request->lokasi['lng']),
+                'is_utama' => $request->isUtama,
             ]);
 
             DB::commit();
+
+            return new AlamatResource($alamat);
         } catch (Throwable $err) {
             abort(500, $err->getMessage());
         }
@@ -96,10 +105,17 @@ class AlamatController extends Controller
      */
     public function update(Request $request, Alamat $alamat)
     {
+        $customer = Auth::user()->customer;
+        if ($request->isUtama) {
+            $customer->alamats()->update([
+                'is_utama' => false
+            ]);
+        }
+
         $alamat->update([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
-            'lokasi' => new Point($request->lokasi->lat, $request->lokasi->lng),
+            'lokasi' => new Point($request->lokasi['lat'], $request->lokasi['lng']),
             'isUtama' => $request->isUtama,
         ]);
 
@@ -122,6 +138,23 @@ class AlamatController extends Controller
         return Response::json([
             'status' => 'OK',
             'msg' => 'Alamat berhasil dihapus'
+        ]);
+    }
+
+    public function updateUtama(Request $request, Alamat $alamat)
+    {
+        $customer = Auth::user()->customer;
+        $customer->alamats()->update([
+            'is_utama' => false
+        ]);
+
+        $alamat->update([
+            'is_utama' => $request->isUtama
+        ]);
+
+        return Response::json([
+            'status' => 'OK',
+            'msg' => 'Alamat utama berhasil diperbarui'
         ]);
     }
 }
