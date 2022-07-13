@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
-use MatanYadaev\EloquentSpatial\Objects\Point;
 use Throwable;
 
 class AuthController extends Controller
@@ -87,6 +86,38 @@ class AuthController extends Controller
                 'user' => new UserResource($user),
                 'token' => $user->createToken($user->email)->plainTextToken
             ]
+        ]);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $update = $user->update([
+            'nama' => $request->nama,
+            'telepon' => $request->telepon,
+            'email' => $request->email
+        ]);
+
+        if (!$update) {
+            abort(500, 'Terjadi kesalahan mengubah profil');
+        }
+
+        return Response::json([
+            'status' => 'OK',
+            'msg' => 'Profil berhasil diperbarui'
+        ]);
+    }
+
+    public function password(Request $request, User $user)
+    {
+        $update = $user->update([ 'password' => bcrypt($request->baru) ]);
+
+        if (!$update) {
+            abort(500, 'Terjadi kesalahan mengubah password');
+        }
+
+        return Response::json([
+            'status' => 'OK',
+            'msg' => 'Password berhasil diperbarui'
         ]);
     }
 }

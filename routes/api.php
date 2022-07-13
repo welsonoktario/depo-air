@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'auth', 'as' => 'api.'], function () {
     Route::post('login', [AuthController::class, 'login'])->name('auth.login');
     Route::post('register', [AuthController::class, 'register'])->name('auth.register');
+    Route::patch('{user}', [AuthController::class, 'update'])->name('auth.update');
+    Route::patch('{user}/password', [AuthController::class, 'password'])->name('auth.password');
 });
 
 Route::group(['middleware' => ['auth:sanctum'], 'as' => 'api.'], function () {

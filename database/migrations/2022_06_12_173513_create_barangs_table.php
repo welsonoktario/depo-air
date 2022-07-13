@@ -19,7 +19,12 @@ return new class extends Migration {
                 ->constrained()
                 ->cascadeOnDelete();
             $table->string('nama');
+            $table->string('deskripsi')
+                ->nullable();
             $table->integer('harga');
+            $table->string('satuan');
+            $table->integer('min_pembelian')
+                ->default(1);
             $table->string('gambar')
                 ->nullable();
             $table->timestamps();

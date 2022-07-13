@@ -1,7 +1,7 @@
 <x-app-layout>
   <x-slot name="header">
-    <div class="inline-flex justify-between items-center w-full">
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    <div class="inline-flex w-full items-center justify-between">
+      <h2 class="text-xl font-semibold leading-tight text-gray-800">
         {{ __('Barang') }}
       </h2>
 
@@ -10,25 +10,29 @@
   </x-slot>
 
   <div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <div class="bg-white overflow-hidden shadow sm:rounded-lg">
-        <div class="p-6 bg-white border-b border-gray-200">
+    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+        <div class="border-b border-gray-200 bg-white p-6">
           @if ($barangs->count())
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-              <table class="w-full text-sm text-left">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700">
                   <th scope="col" class="px-6 py-3">Nama</th>
                   <th scope="col" class="px-6 py-3">Harga</th>
+                  <th scope="col" class="px-6 py-3">Satuan</th>
+                  <th scope="col" class="px-6 py-3">Min. Pembelian</th>
                   <th scope="col" class="px-6 py-3">Kategori</th>
-                  <th scope="col" class="px-6 py-3 w-20">
+                  <th scope="col" class="w-20 px-6 py-3">
                     <span class="sr-only">Edit</span>
                   </th>
                 </thead>
                 <tbody>
                   @foreach ($barangs as $barang)
-                    <tr class="bg-white border-b">
-                      <td scope="row" class="px-6 py-4 font-medium whitespace-nowrap">{{ $barang->nama }}</td>
+                    <tr class="border-b bg-white">
+                      <td scope="row" class="whitespace-nowrap px-6 py-4 font-medium">{{ $barang->nama }}</td>
                       <td class="px-6 py-4">@rupiah($barang->harga)</td>
+                      <td class="px-6 py-4">{{ $barang->satuan }}</td>
+                      <td class="px-6 py-4">{{ $barang->min_pembelian }}</td>
                       <td class="px-6 py-4">{{ $barang->kategori->nama ?? '-' }}</td>
                       <td class="px-6 py-4">
                         <x-button-link href="{{ route('barang.edit', $barang->id) }}">Edit</x-button-link>

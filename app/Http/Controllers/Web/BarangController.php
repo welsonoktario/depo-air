@@ -47,8 +47,11 @@ class BarangController extends Controller
     {
         Barang::create([
             'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
+            'satuan' => $request->satuan,
             'harga' => $request->harga,
-            'kategori_id' => $request->kategori
+            'min_pembelian' => $request->min,
+            'kategori_id' => $request->kategori,
         ]);
 
         return Redirect::route('barang.index');
@@ -89,8 +92,11 @@ class BarangController extends Controller
     {
         $barang->update([
             'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
+            'satuan' => $request->satuan,
             'harga' => $request->harga,
-            'kategori_id' => $request->kategori
+            'min_pembelian' => $request->min,
+            'kategori_id' => $request->kategori,
         ]);
 
         return Redirect::route('barang.index');

@@ -11,7 +11,8 @@ class Barang extends Model
 
     protected $guarded = ['id'];
     protected $casts = [
-        'harga' => 'integer'
+        'harga' => 'integer',
+        'min_pembelian' => 'integer'
     ];
 
     public function kategori()

@@ -4,11 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Events\TransaksiCreated;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BarangCollection;
-use App\Http\Resources\DepoCollection;
 use App\Http\Resources\TransaksiCollection;
 use App\Http\Resources\TransaksiResource;
-use App\Models\Barang;
 use App\Models\Depo;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
@@ -16,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 use Throwable;
 
 class TransaksiController extends Controller
@@ -27,11 +25,21 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        $transaksis = Transaksi::query()
-            ->with(['depo', 'kurir.user', 'barangs'])
-            ->whereHas('customer', fn ($q) => $q->where('user_id', Auth::id()))
-            ->orderBy('tanggal', 'desc')
-            ->get();
+        $user = Auth::user();
+
+        if ($user->role == 'Customer') {
+            $transaksis = Transaksi::query()
+                ->with(['depo', 'kurir.user', 'barangs'])
+                ->where('customer_id', $user->customer->id)
+                ->orderBy('tanggal', 'desc')
+                ->get();
+        } else if ($user->role == 'Kurir') {
+            $transaksis = Transaksi::query()
+                ->with(['depo', 'kurir.user', 'barangs'])
+                ->where('kurir_id', $user->kurir->id)
+                ->orderBy('tanggal', 'desc')
+                ->get();
+        }
 
         return new TransaksiCollection($transaksis);
     }
@@ -43,9 +51,7 @@ class TransaksiController extends Controller
      */
     public function create()
     {
-        $barangs = Barang::all();
-
-        return new BarangCollection($barangs);
+        //
     }
 
     /**
@@ -62,7 +68,7 @@ class TransaksiController extends Controller
             foreach ($request->cart as $cart) {
                 $barangs[$cart['barang']['id']] = (int) $cart['jumlah'];
             }
-            $depo = $this->findDepo($barangs, $customer->lokasi);
+            $depo = $this->findDepo($barangs, $request->lokasi);
 
             if ($depo) {
                 DB::beginTransaction();
@@ -73,7 +79,8 @@ class TransaksiController extends Controller
                         'depo_id' => $depo->id,
                         'customer_id' => $customer->id,
                         'tanggal' => now('Asia/Jakarta'),
-                        'status' => 'Menunggu Pembayaran'
+                        'status' => 'Menunggu Pembayaran',
+                        'lokasi_pengiriman' => new Point($request->lokasi['lat'], $request->lokasi['lng'])
                     ]);
 
                 $transaksiDetails = [];
@@ -116,6 +123,29 @@ class TransaksiController extends Controller
         return new TransaksiResource($transaksi);
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Transaksi  $transaksi
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Transaksi $transaksi)
+    {
+        $update = $transaksi->update([
+            'status' => $request->status
+        ]);
+
+        if (!$update) {
+            abort(500);
+        }
+
+        return Response::json([
+            'status' => 'OK',
+            'msg' => 'Transaksi selesai'
+        ]);
+    }
+
     // cari 1 depo terdekat yang stok pesanan mencukupi
     private function findDepo($barangs, $lokasi)
     {
@@ -144,8 +174,8 @@ class TransaksiController extends Controller
         foreach ($listDepo as $depo) {
             $lokasiDepo = $depo[0]->lokasi;
             $distance = $this->haversineGreatCircleDistance(
-                $lokasi->latitude,
-                $lokasi->longitude,
+                $lokasi['lat'],
+                $lokasi['lng'],
                 $lokasiDepo->latitude,
                 $lokasiDepo->longitude
             );

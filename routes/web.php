@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\DepoController;
 use App\Http\Controllers\Web\InventoriController;
 use App\Http\Controllers\Web\KategoriController;
+use App\Http\Controllers\Web\KurirController;
 use App\Http\Controllers\Web\TransaksiController;
 
 /*
@@ -36,6 +37,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         'depo' => DepoController::class,
         'barang' => BarangController::class,
         'kategori' => KategoriController::class,
+        'kurir' => KurirController::class,
         'transaksi' => TransaksiController::class,
     ]);
 });

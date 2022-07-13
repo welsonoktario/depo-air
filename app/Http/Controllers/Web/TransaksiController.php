@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Web;
 
 use App\Events\TransaksiUpdated;
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
 use App\Models\Depo;
+use App\Models\Kurir;
 use App\Models\Transaksi;
-use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Throwable;
@@ -41,8 +40,12 @@ class TransaksiController extends Controller
     public function show(Transaksi $transaksi)
     {
         $transaksi->load(['customer', 'kurir', 'barangs']);
+        $kurirs = Kurir::query()
+            ->with('user')
+            ->where('depo_id', Auth::user()->depo->id)
+            ->get();
 
-        return View::make('transaksi.edit', compact('transaksi'));
+        return View::make('transaksi.edit', compact('transaksi', 'kurirs'));
     }
 
     /**
@@ -80,9 +83,11 @@ class TransaksiController extends Controller
             ]);
 
             if ($request->aksi == 'Dikirim') {
+                $transaksi->update(['kurir_id' => $request->kurir]);
+
                 foreach ($transaksi->barangs as $barang) {
                     $barangDepo = collect($depo->barangs)->firstWhere('id', $barang->id);
-                    Log::debug($barangDepo);
+
                     $depo->barangs()->sync([
                         $barang->id => ['stok' => $barangDepo->pivot->stok - $barang->pivot->jumlah]
                     ], false);

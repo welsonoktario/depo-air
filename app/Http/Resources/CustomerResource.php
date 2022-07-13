@@ -16,8 +16,6 @@ class CustomerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'alamat' => $this->alamat,
-            'lokasi' => $this->lokasi,
             'barangs' => KeranjangCollection::make($this->whenLoaded('barangs'))
         ];
     }

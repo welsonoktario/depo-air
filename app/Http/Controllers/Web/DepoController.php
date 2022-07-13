@@ -64,6 +64,7 @@ class DepoController extends Controller
                 'email' => $request->user_email,
                 'telepon' => $request->user_telepon,
                 'password' => bcrypt($request->user_password),
+                'role' => 'Admin'
             ]);
 
             $user->depo()->create([

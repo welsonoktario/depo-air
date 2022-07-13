@@ -42,4 +42,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Customer::class);
     }
+
+    public function kurir()
+    {
+        return $this->hasOne(Kurir::class);
+    }
 }

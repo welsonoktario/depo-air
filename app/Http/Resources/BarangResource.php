@@ -17,7 +17,10 @@ class BarangResource extends JsonResource
         return [
             'id' => $this->id,
             'nama' => $this->nama,
+            'deskripsi' => $this->deskripsi,
+            'satuan' => $this->satuan,
             'harga' => $this->harga,
+            'minPembelian' => $this->min_pembelian,
             'gambar' => $this->gambar,
             'stok' => $this->whenPivotLoaded('depo_barangs', fn () => $this->pivot->stok),
             'kategori' => $this->whenPivotLoaded('kategori', fn () => $this->kategori)

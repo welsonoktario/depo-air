@@ -16,7 +16,7 @@ class Transaksi extends Model
 
     protected $guarded = ['id'];
     protected $casts = [
-        'lokasi' => Point::class,
+        'lokasi_pengiriman' => Point::class,
     ];
 
     public function newEloquentBuilder($query): SpatialBuilder

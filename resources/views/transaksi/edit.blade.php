@@ -22,13 +22,18 @@
             <span>Tanggal Transaksi:</span>
             <span class="ml-2" x-text="tanggal()"></span>
           </div>
-          <div class="inline-flex w-full justify-start">
+          <div class="inline-flex w-full items-center justify-start">
             <span>Kurir:</span>
             <template x-if="transaksi.kurir">
               <span class="ml-2" x-text="transaksi.kurir.user.nama"></span>
             </template>
             <template x-if="!transaksi.kurir">
-              <span class="ml-2">-</span>
+              <x-select class="ml-4 w-auto" x-model="kurir" name="kurir" required>
+                <option value="null" selected disabled>Pilih kurir</option>
+                <template x-for="kurir in kurirs">
+                  <option :value="kurir.id" x-text="kurir.user.nama"></option>
+                </template>
+              </x-select>
             </template>
           </div>
           <div class="inline-flex w-full justify-start">
@@ -79,20 +84,30 @@
     <script>
       Alpine.data("detail", () => ({
         transaksi: {{ Js::from($transaksi) }},
+        kurirs: {{ Js::from($kurirs) }},
+        kurir: null,
         async proses(aksi) {
+          if (!this.kurir || this.kurir == 'null') {
+            alert('Pilih kurir');
+            return;
+          }
+
           const url = route("transaksi.update", {
-            transaksi: this.transaksi.id
+            transaksi: this.transaksi.id,
           });
           const res = await fetch(url, {
             headers: {
-              "Content-Type": "application/json",
               Accept: "application/json",
+              "Content-Type": "application/json",
               "X-Requested-With": "XMLHttpRequest",
               "X-CSRF-Token": "{{ csrf_token() }}",
             },
             method: "PATCH",
             body: JSON.stringify({
               aksi,
+              ...(this.kurir && this.kurir != 'null' ? {
+                kurir: this.kurir
+              } : null)
             }),
           });
           const {
@@ -101,6 +116,11 @@
 
           if (status == "OK") {
             this.transaksi.status = aksi;
+          }
+
+          if (aksi == 'Dikirim') {
+            const k = this.kurirs.find(ku => ku.id == this.kurir);
+            this.transaksi.kurir = k
           }
         },
         tanggal() {

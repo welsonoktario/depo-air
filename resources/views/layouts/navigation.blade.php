@@ -35,6 +35,10 @@
           @endif
 
           @if (auth()->user()->role === 'Admin')
+            <x-nav-link :href="route('kurir.index')" :active="request()->routeIs('kurir.index')">
+              {{ __('Kurir') }}
+            </x-nav-link>
+
             <x-nav-link :href="route('inventori.index')" :active="request()->routeIs('inventori.index')">
               {{ __('Inventori') }}
             </x-nav-link>
@@ -118,6 +122,10 @@
       @endif
 
       @if (auth()->user()->role === 'Admin')
+        <x-responsive-nav-link :href="route('kurir.index')" :active="request()->routeIs('kurir.index')">
+          {{ __('Kurir') }}
+        </x-responsive-nav-link>
+
         <x-responsive-nav-link :href="route('inventori.index')" :active="request()->routeIs('inventori.index')">
           {{ __('Inventori') }}
         </x-responsive-nav-link>

@@ -12,7 +12,7 @@
           <div class="grid grid-cols-4 gap-8">
             <template x-if="transaksis.length">
               <template x-for="(transaksi, index) in transaksis" :key="index">
-                <div class="p-4 shadow-sm sm:rounded-lg">
+                <div class="bg-indigo-200 p-4 shadow-sm sm:rounded-lg">
                   <p class="mb-4" x-text="createdAt(transaksi)"></p>
                   <p class="text-lg font-semibold tracking-tighter" x-text="transaksi.customer.user.nama"></p>
                   <div class="mt-4 flex flex-row justify-start gap-2">
