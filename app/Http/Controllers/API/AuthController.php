@@ -57,16 +57,17 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        try {
-            DB::beginTransaction();
+        DB::beginTransaction();
 
+        try {
             $user = User::query()
-            ->create([
-                'nama' => $request->nama,
-                'email' => $request->email,
-                'telepon' => $request->telepon,
-                'password' => bcrypt($request->password)
-            ]);
+                ->create([
+                    'nama' => $request->nama,
+                    'email' => $request->email,
+                    'telepon' => $request->telepon,
+                    'password' => bcrypt($request->password),
+                    'role' => 'Customer'
+                ]);
 
             $user->customer()->create([]);
 
