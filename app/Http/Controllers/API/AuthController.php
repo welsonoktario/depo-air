@@ -65,12 +65,10 @@ class AuthController extends Controller
                 'nama' => $request->nama,
                 'email' => $request->email,
                 'telepon' => $request->telepon,
+                'password' => bcrypt($request->password)
             ]);
 
-            $user->customer()->create([
-                'alamat' => $request->alamat,
-                'lokasi' => new Point($request->lokasi->lat, $request->lokasi->long)
-            ]);
+            $user->customer()->create([]);
 
             DB::commit();
 
