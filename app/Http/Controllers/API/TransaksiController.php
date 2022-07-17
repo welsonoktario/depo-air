@@ -33,7 +33,7 @@ class TransaksiController extends Controller
                 ->where('customer_id', $user->customer->id)
                 ->orderBy('tanggal', 'desc')
                 ->get();
-        } else if ($user->role == 'Kurir') {
+        } elseif ($user->role == 'Kurir') {
             $transaksis = Transaksi::query()
                 ->with(['depo', 'kurir.user', 'barangs'])
                 ->where('kurir_id', $user->kurir->id)
@@ -149,44 +149,49 @@ class TransaksiController extends Controller
     // cari 1 depo terdekat yang stok pesanan mencukupi
     private function findDepo($barangs, $lokasi)
     {
-        $ids = collect($barangs)->map(fn ($barang, $key) => $key)->values();
+        $ids = collect($barangs)
+            ->map(fn ($barang, $key) => $key)
+            ->values();
+        $keranjangs = collect($barangs)
+            ->map(fn ($jumlah, $id) => ['id' => $id, 'jumlah' => $jumlah])
+            ->values();
         $listDepo = collect([]);
         $depos = Depo::query()
-            ->with('barangs')
+            ->with(['barangs' => fn ($q) => $q->whereIn('barang_id', $ids)->orderBy('barang_id', 'asc')])
             ->whereHas('barangs', fn ($q) => $q->whereIn('barang_id', $ids))
             ->get();
 
         foreach ($depos as $depo) {
-            foreach ($depo->barangs as $barang) {
-                foreach ($barangs as $id => $stok) {
-                    if ($barang->id == $id && $barang->pivot->stok >= $stok) {
+            if ($depo->barangs->count() == $ids->count()) {
+                $barangDepo = $depo->barangs;
+                foreach ($keranjangs as $i => $keranjang) {
+                    if ($barangDepo[$i]->pivot->stok >= $keranjang['jumlah']) {
                         $listDepo->add($depo);
+                    } else {
+                        continue;
                     }
                 }
+            } else {
+                continue;
             }
         }
-        $listDepo = $listDepo->groupBy('id');
-        $listDepo = $listDepo->filter(function ($depo) use ($ids) {
-            return $depo->count() == $ids->count();
-        });
-        $listDepo = $listDepo->map(fn ($depo) => $depo->unique('id'))->values();
 
         foreach ($listDepo as $depo) {
-            $lokasiDepo = $depo[0]->lokasi;
+            $lokasiDepo = $depo->lokasi;
             $distance = $this->haversineGreatCircleDistance(
                 $lokasi['lat'],
                 $lokasi['lng'],
                 $lokasiDepo->latitude,
                 $lokasiDepo->longitude
             );
-            $depo[0]['distance'] = $distance;
+            $depo['distance'] = $distance;
         }
 
-        $nearest = $listDepo->sortByDesc(function ($depo) {
-            return $depo[0]->distance;
+        $nearest = $listDepo->sortBy(function ($depo) {
+            return $depo->distance;
         });
 
-        return $nearest->first()[0];
+        return $nearest->first();
     }
 
     /**

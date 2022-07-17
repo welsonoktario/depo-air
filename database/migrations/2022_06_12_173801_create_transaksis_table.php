@@ -29,6 +29,7 @@ return new class extends Migration {
             $table->point('lokasi_pengiriman');
             $table->enum('status', ['Menunggu Pembayaran', 'Diproses', 'Dikirim', 'Selesai'])
                 ->default('Menunggu Pembayaran');
+            $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
         });
     }
