@@ -7,6 +7,7 @@ use App\Models\Barang;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
 class BarangController extends Controller
@@ -45,13 +46,19 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        Barang::create([
+        $barang = Barang::create([
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'satuan' => $request->satuan,
             'harga' => $request->harga,
             'min_pembelian' => $request->min,
             'kategori_id' => $request->kategori,
+        ]);
+
+        Storage::putFileAs('public', $request->file('foto'), "barang/{$barang->id}.jpeg");
+
+        $barang->update([
+            'gambar' => "barang/{$barang->id}.jpeg"
         ]);
 
         return Redirect::route('barang.index');
@@ -98,6 +105,9 @@ class BarangController extends Controller
             'min_pembelian' => $request->min,
             'kategori_id' => $request->kategori,
         ]);
+
+        Storage::delete("public/$barang->gambar");
+        Storage::putFileAs('public', $request->file('foto'), "barang/{$barang->id}.jpeg");
 
         return Redirect::route('barang.index');
     }

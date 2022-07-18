@@ -82,7 +82,7 @@ class TransaksiController extends Controller
                 'status' => $request->aksi,
             ]);
 
-            if ($request->aksi == 'Dikirim') {
+            if ($request->aksi == 'Diproses') {
                 $transaksi->update(['kurir_id' => $request->kurir]);
 
                 foreach ($transaksi->barangs as $barang) {

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Throwable;
 
@@ -137,7 +138,10 @@ class TransaksiController extends Controller
         ]);
 
         if (!$update) {
-            abort(500);
+            return Response::json([
+                'status' => 'GAGAL',
+                'msg' => 'Terjadi kesalahan mengirim bukti pembayaran'
+            ], 500);
         }
 
         return Response::json([
@@ -221,7 +225,32 @@ class TransaksiController extends Controller
         $lonDelta = $lonTo - $lonFrom;
 
         $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-      cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
         return $angle * $earthRadius;
+    }
+
+    public function uploadBukti(Request $request, Transaksi $transaksi)
+    {
+        DB::beginTransaction();
+        try {
+            Storage::putFileAs('public', $request->file('bukti'), "bukti/{$transaksi->id}.jpeg");
+            $transaksi->update([
+                'bukti_pembayaran' => "bukti/{$transaksi->id}.jpeg"
+            ]);
+            DB::commit();
+        } catch (Throwable $err) {
+            Log::error($err->getMessage());
+            DB::rollBack();
+
+            return Response::json([
+                'status' => 'GAGAL',
+                'msg' => $err->getMessage()
+            ], 500);
+        }
+
+        return Response::json([
+            'status' => 'OK',
+            'msg' => 'Bukti pembayaran berhasil terkirim'
+        ]);
     }
 }
