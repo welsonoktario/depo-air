@@ -133,9 +133,17 @@ class TransaksiController extends Controller
      */
     public function update(Request $request, Transaksi $transaksi)
     {
-        $update = $transaksi->update([
-            'status' => $request->status
-        ]);
+        $ulasan = $request->ulasan;
+        $update = $transaksi->when(
+            $ulasan,
+            fn ($q) => $transaksi->update([
+                'status' => $request->status,
+                'ulasan' => $ulasan
+            ]),
+            fn ($q) => $transaksi->update([
+                'status' => $request->status
+            ])
+        );
 
         if (!$update) {
             return Response::json([
