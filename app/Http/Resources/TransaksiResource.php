@@ -23,6 +23,7 @@ class TransaksiResource extends JsonResource
                 'lng' => $this->lokasi_pengiriman->longitude
             ],
             'buktiPembayaran' => $this->bukti_pembayaran,
+            'ulasan' => $this->ulasan,
             'depo' => DepoResource::make($this->whenLoaded('depo')),
             'kurir' => KurirResource::make($this->whenLoaded('kurir')),
             'details' => KeranjangCollection::make($this->whenLoaded('barangs'))
