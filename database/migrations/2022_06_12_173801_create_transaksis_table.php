@@ -30,6 +30,7 @@ return new class extends Migration {
             $table->enum('status', ['Menunggu Pembayaran', 'Diproses', 'Dikirim', 'Selesai'])
                 ->default('Menunggu Pembayaran');
             $table->string('bukti_pembayaran')->nullable();
+            $table->string('ulasan')->nullable();
             $table->timestamps();
         });
     }
