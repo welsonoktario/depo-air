@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
+use Throwable;
 
 class CustomerController extends Controller
 {
@@ -89,6 +92,18 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $customer->delete();
+            $customer->user()->delete();
+            DB::commit();
+        } catch (Throwable $err) {
+            DB::rollBack();
+
+            return Redirect::back();
+        }
+
+        return Redirect()->route('customer.index');
     }
 }

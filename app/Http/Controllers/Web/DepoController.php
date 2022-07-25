@@ -96,8 +96,7 @@ class DepoController extends Controller
      */
     public function show(Depo $depo)
     {
-        $depo->load('user');
-        return View::make('depo.show', compact('depo'));
+        //
     }
 
     /**
