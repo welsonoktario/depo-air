@@ -27,20 +27,17 @@ class TransaksiController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $transaksis = Transaksi::query()
+            ->with(['depo', 'kurir.user', 'barangs']);
 
         if ($user->role == 'Customer') {
-            $transaksis = Transaksi::query()
-                ->with(['depo', 'kurir.user', 'barangs'])
-                ->where('customer_id', $user->customer->id)
-                ->orderBy('tanggal', 'desc')
-                ->get();
+            $transaksis = $transaksis->where('customer_id', $user->customer->id);
         } elseif ($user->role == 'Kurir') {
-            $transaksis = Transaksi::query()
-                ->with(['depo', 'kurir.user', 'barangs'])
-                ->where('kurir_id', $user->kurir->id)
-                ->orderBy('tanggal', 'desc')
-                ->get();
+            $transaksis = $transaksis->where('kurir_id', $user->kurir->id);
         }
+
+        $transaksis = $transaksis->orderBy('tanggal', 'desc')
+            ->get();
 
         return new TransaksiCollection($transaksis);
     }
@@ -243,7 +240,8 @@ class TransaksiController extends Controller
         try {
             Storage::putFileAs('public', $request->file('bukti'), "bukti/{$transaksi->id}.jpeg");
             $transaksi->update([
-                'bukti_pembayaran' => "bukti/{$transaksi->id}.jpeg"
+                'bukti_pembayaran' => "bukti/{$transaksi->id}.jpeg",
+                'status' => 'Menunggu Konfirmasi'
             ]);
             DB::commit();
         } catch (Throwable $err) {

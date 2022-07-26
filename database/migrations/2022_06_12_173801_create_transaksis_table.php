@@ -27,7 +27,7 @@ return new class extends Migration {
             $table->dateTime('tanggal')
                 ->useCurrent();
             $table->point('lokasi_pengiriman');
-            $table->enum('status', ['Menunggu Pembayaran', 'Diproses', 'Dikirim', 'Selesai'])
+            $table->enum('status', ['Menunggu Pembayaran', 'Menunggu Konfirmasi', 'Diproses', 'Dikirim', 'Selesai'])
                 ->default('Menunggu Pembayaran');
             $table->string('bukti_pembayaran')->nullable();
             $table->string('ulasan')->nullable();
