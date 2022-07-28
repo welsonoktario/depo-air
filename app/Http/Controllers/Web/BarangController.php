@@ -106,8 +106,10 @@ class BarangController extends Controller
             'kategori_id' => $request->kategori,
         ]);
 
-        Storage::delete("public/$barang->gambar");
-        Storage::putFileAs('public', $request->file('foto'), "barang/{$barang->id}.jpeg");
+        if ($request->foto) {
+            Storage::delete("public/$barang->gambar");
+            Storage::putFileAs('public', $request->file('foto'), "barang/{$barang->id}.jpeg");
+        }
 
         return Redirect::route('barang.index');
     }

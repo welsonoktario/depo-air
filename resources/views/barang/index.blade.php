@@ -1,7 +1,7 @@
 <x-app-layout>
   <x-slot name="header">
-    <div class="inline-flex w-full items-center justify-between">
-      <h2 class="text-xl font-semibold leading-tight text-gray-800">
+    <div class="inline-flex items-center justify-between w-full">
+      <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
         {{ __('Barang') }}
       </h2>
 
@@ -11,12 +11,12 @@
 
   <div class="py-12">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <div class="overflow-hidden bg-white shadow sm:rounded-lg">
-        <div class="border-b border-gray-200 bg-white p-6">
+      <div class="overflow-hidden bg-white shadow dark:bg-zinc-800 sm:rounded-lg">
+        <div class="p-6 bg-white dark:bg-zinc-800 dark:text-white">
           @if ($barangs->count())
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-              <table class="w-full text-left text-sm">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700">
+              <table class="w-full text-sm text-left">
+                <thead class="text-xs text-gray-700 uppercase dark:text-white bg-gray-50 dark:bg-zinc-600">
                   <th scope="col" class="px-6 py-3">Nama</th>
                   <th scope="col" class="px-6 py-3">Harga</th>
                   <th scope="col" class="px-6 py-3">Satuan</th>
@@ -28,8 +28,8 @@
                 </thead>
                 <tbody>
                   @foreach ($barangs as $barang)
-                    <tr class="border-b bg-white">
-                      <td scope="row" class="whitespace-nowrap px-6 py-4 font-medium">{{ $barang->nama }}</td>
+                    <tr class="bg-white border-b last:border-b-0 dark:bg-zinc-700">
+                      <td scope="row" class="px-6 py-4 font-medium whitespace-nowrap">{{ $barang->nama }}</td>
                       <td class="px-6 py-4">@rupiah($barang->harga)</td>
                       <td class="px-6 py-4">{{ $barang->satuan }}</td>
                       <td class="px-6 py-4">{{ $barang->min_pembelian }}</td>

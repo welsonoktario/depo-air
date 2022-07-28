@@ -3,7 +3,7 @@
     <div class="inline-flex items-center w-full gap-4">
       <x-button type="button" onclick="window.history.back()">Kembali</x-button>
 
-      <h2 class="text-xl font-semibold leading-tight text-gray-800">
+      <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
         {{ __('Tambah Barang') }}
       </h2>
     </div>
@@ -11,8 +11,10 @@
 
   <div x-data="barang" class="py-12">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-        <form class="p-6 bg-white border-b border-gray-200" action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data">
+      <div class="overflow-hidden bg-white shadow-sm dark:bg-zinc-700 sm:rounded-lg">
+
+        <form class="p-6 bg-white dark:bg-zinc-800" action="{{ route('barang.store') }}" method="POST"
+          enctype="multipart/form-data">
           @csrf
           <div class="w-full mb-3">
             <x-label for="nama">Nama Barang</x-label>
@@ -45,8 +47,9 @@
           </div>
           <div class="w-full mb-3">
             <x-label for="min">Foto Barang</x-label>
-            <x-input name="foto" type="file" accept="image/*" x-ref="foto" @change="previewFoto"
-              required />
+            <x-input
+              class="file:py-1 file:bg-indigo-50 hover:file:bg-indigo-100 file:text-indigo-700 file:px-4 file:rounded-md file:border-0"
+              name="foto" type="file" accept="image/*" x-ref="foto" @change="previewFoto" required />
           </div>
 
           <template x-if="imgsrc">

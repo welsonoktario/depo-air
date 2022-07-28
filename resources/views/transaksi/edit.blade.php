@@ -1,9 +1,9 @@
 <x-app-layout>
   <x-slot name="header">
-    <div class="inline-flex w-full items-center gap-4">
+    <div class="inline-flex items-center w-full gap-4">
       <x-button type="button" @click="window.history.back()">Kembali</x-button>
 
-      <h2 class="text-xl font-semibold leading-tight text-gray-800">
+      <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
         {{ __('Edit Transaksi') }}
       </h2>
     </div>
@@ -11,24 +11,24 @@
 
   <div x-data="detail" class="py-12">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-        <div class="border-b border-gray-200 bg-white p-6">
+      <div class="overflow-hidden bg-white shadow-sm dark:bg-zinc-700 sm:rounded-lg">
+        <div class="p-6 bg-white dark:bg-zinc-800">
           <h6 class="mb-4 text-xl font-bold">Detail</h6>
-          <div class="inline-flex w-full justify-start">
+          <div class="inline-flex justify-start w-full">
             <span>ID Transaksi:</span>
             <span class="ml-2" x-text="transaksi.id"></span>
           </div>
-          <div class="inline-flex w-full justify-start">
+          <div class="inline-flex justify-start w-full">
             <span>Tanggal Transaksi:</span>
             <span class="ml-2" x-text="tanggal()"></span>
           </div>
-          <div class="inline-flex w-full items-center justify-start">
+          <div class="inline-flex items-center justify-start w-full">
             <span>Kurir:</span>
             <template x-if="transaksi.kurir">
               <span class="ml-2" x-text="transaksi.kurir.user.nama"></span>
             </template>
             <template x-if="!transaksi.kurir">
-              <x-select class="ml-4 w-auto" x-model="kurir" name="kurir" required>
+              <x-select class="w-auto ml-4" x-model="kurir" name="kurir" required>
                 <option value="null" selected disabled>Pilih kurir</option>
                 <template x-for="kurir in kurirs">
                   <option :value="kurir.id" x-text="kurir.user.nama"></option>
@@ -36,7 +36,7 @@
               </x-select>
             </template>
           </div>
-          <div class="inline-flex w-full justify-start">
+          <div class="inline-flex justify-start w-full">
             <span>Status:</span>
             <span class="ml-2" x-text="transaksi.status"
               :class="{
@@ -44,15 +44,16 @@
                   'text-indigo-500': transaksi.status == 'Diproses',
                   'text-blue-500': transaksi.status == 'Dikirim',
                   'text-green-500': transaksi.status == 'Selesai',
+                  'text-rose-500': transaksi.status == 'Batal',
               }"></span>
           </div>
           <template x-if="transaksi.status == 'Selesai'">
-            <div class="inline-flex w-full justify-start">
+            <div class="inline-flex justify-start w-full">
               <span>Ulasan Transaksi:</span>
               <span class="ml-2" x-text="ulasan()"></span>
             </div>
           </template>
-          <div class="mt-2 inline-flex w-full justify-start">
+          <div class="inline-flex justify-start w-full mt-2">
             <p>Bukti Pembayaran:</span>
               <template x-if="transaksi.bukti_pembayaran">
                 <img class="w-1/4 rounded-md" :src="bukti()" />
@@ -63,11 +64,11 @@
           </div>
 
           <h6 class="mt-6 mb-4 text-xl font-bold">Barang</h6>
-          <div class="container-sm mx-auto flex flex-col">
+          <div class="flex flex-col mx-auto container-sm">
             <template x-for="(barang, index) in transaksi.barangs">
               <div class="inline-flex border" :key="index">
-                <span x-text="index+1" class="border-r p-2"></span>
-                <span x-text="barang.nama" class="flex-grow border-r p-2"></span>
+                <span x-text="index+1" class="p-2 border-r"></span>
+                <span x-text="barang.nama" class="flex-grow p-2 border-r"></span>
                 <span class="flex-shrink p-2" x-text="subtotal(barang)"></span>
               </div>
             </template>
@@ -77,8 +78,9 @@
             </p>
           </div>
 
-          <template x-if="transaksi.status == 'Menunggu Pembayaran'">
-            <div class="mt-6 inline-flex w-full">
+          <template x-if="transaksi.status == 'Menunggu Konfirmasi'">
+            <div class="inline-flex w-full mt-6">
+              <x-button class="mr-2 bg-rose-600" type="button" @click="proses('Batal')">Batal</x-button>
               <x-button type="button" @click="proses('Diproses')">Proses</x-button>
             </div>
           </template>
@@ -94,9 +96,11 @@
         kurirs: {{ Js::from($kurirs) }},
         kurir: null,
         async proses(aksi) {
-          if (!this.kurir || this.kurir == 'null') {
-            alert('Pilih kurir');
-            return;
+          if (aksi != 'Batal') {
+            if (!this.kurir || this.kurir == 'null') {
+              alert('Pilih kurir');
+              return;
+            }
           }
 
           const url = route("transaksi.update", {

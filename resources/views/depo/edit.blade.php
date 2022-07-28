@@ -7,7 +7,7 @@
     <div class="inline-flex items-center w-full gap-4">
       <x-button type="button" @click="window.history.back()">Kembali</x-button>
 
-      <h2 class="text-xl font-semibold leading-tight text-gray-800">
+      <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
         {{ __('Edit Depo') }}
       </h2>
     </div>
@@ -15,8 +15,8 @@
 
   <div x-data="depo" class="py-12">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-        <form class="p-6 bg-white border-b border-gray-200" action="{{ route('depo.update', $depo->id) }}"
+      <div class="overflow-hidden bg-white dark:bg-zinc-700 shadow-sm sm:rounded-lg">
+        <form class="p-6 bg-white dark:bg-zinc-800" action="{{ route('depo.update', $depo->id) }}"
           method="POST">
           @csrf
           @method('PATCH')

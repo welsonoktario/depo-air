@@ -3,7 +3,7 @@
     <div class="inline-flex w-full items-center gap-4">
       <x-button type="button" onclick="window.history.back()">Kembali</x-button>
 
-      <h2 class="text-xl font-semibold leading-tight text-gray-800">
+      <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
         {{ __('Edit Kurir') }}
       </h2>
     </div>
@@ -11,7 +11,7 @@
 
   <div class="py-12">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+      <div class="overflow-hidden bg-white dark:bg-zinc-700 shadow-sm sm:rounded-lg">
         <form class="border-b border-gray-200 bg-white p-6" action="{{ route('kurir.update', $kurir->id) }}"
           method="POST">
           @csrf

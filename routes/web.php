@@ -30,6 +30,8 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         return view('dashboard');
     })->name('dashboard');
 
+    Route::get('/test', [TransaksiController::class, 'index']);
+
     Route::resource('inventori', InventoriController::class)->parameter('inventori', 'barang');
 
     Route::resources([

@@ -4,30 +4,30 @@
   @endpush
 
   <x-slot name="header">
-    <div class="inline-flex items-center gap-4 w-full">
+    <div class="inline-flex items-center w-full gap-4">
       <x-button type="button" @click="window.history.back()">Kembali</x-button>
 
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+      <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
         {{ __('Tambah Depo') }}
       </h2>
     </div>
   </x-slot>
 
   <div x-data="depo" class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <form class="p-6 bg-white border-b border-gray-200" action="{{ route('depo.store') }}" method="POST">
+    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div class="overflow-hidden bg-white shadow-sm dark:bg-zinc-800 sm:rounded-lg">
+        <form class="p-6 bg-white dark:bg-zinc-800" action="{{ route('depo.store') }}" method="POST">
           @csrf
-          <p class="font-semibold text-lg mb-3">Detail Depo</p>
-          <div class="mb-3 w-full">
+          <p class="mb-3 text-lg font-semibold">Detail Depo</p>
+          <div class="w-full mb-3">
             <x-label for="depo_nama">Nama Depo</x-label>
             <x-input name="depo_nama" type="text" required />
           </div>
-          <div class="mb-3 w-full">
+          <div class="w-full mb-3">
             <x-label for="depo_alamat">Alamat Depo</x-label>
             <x-input name="depo_alamat" type="text" autocomplete="street-address" required />
           </div>
-          <div class="flex flex-col h-96 mb-3 w-full">
+          <div class="flex flex-col w-full mb-3 h-96">
             <x-label for="depo_alamat">Lokasi Depo</x-label>
             <div id="map" class="w-full h-full rounded-md"></div>
           </div>
@@ -35,7 +35,7 @@
             <input type="text" name="depo_lokasi_lat" :value="lokasi.lat">
             <input type="text" name="depo_lokasi_long" :value="lokasi.lng">
           </div>
-          <div class="mb-6 w-full">
+          <div class="w-full mb-6">
             <x-label for="depo_tipe">Tipe Cabang Depo</x-label>
             <x-select name="depo_tipe" required>
               <option value="Cabang Utama">Cabang Utama</option>
@@ -44,20 +44,20 @@
             </x-select>
           </div>
 
-          <p class="font-semibold text-lg mb-3">Detail Admin</p>
-          <div class="mb-3 w-full">
+          <p class="mb-3 text-lg font-semibold">Detail Admin</p>
+          <div class="w-full mb-3">
             <x-label for="user_nama">Nama Admin</x-label>
             <x-input name="user_nama" type="text" required />
           </div>
-          <div class="mb-3 w-full">
+          <div class="w-full mb-3">
             <x-label for="user_email">Email Admin</x-label>
             <x-input name="user_email" type="email" required />
           </div>
-          <div class="mb-3 w-full">
+          <div class="w-full mb-3">
             <x-label for="user_telepon">Telepon Depo</x-label>
             <x-input name="user_telepon" type="tel" required />
           </div>
-          <div class="mb-3 w-full">
+          <div class="w-full mb-3">
             <x-label for="user_password">Password Admin</x-label>
             <x-input name="user_password" type="password" required />
           </div>

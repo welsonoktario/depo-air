@@ -26,9 +26,13 @@ class TransaksiController extends Controller
         $transaksis = Transaksi::query()
             ->with(['customer.user', 'barangs'])
             ->whereDepoId(Auth::user()->depo->id)
-            ->get();
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->groupBy('status');
 
         return View::make('transaksi.index', compact('transaksis'));
+
+        // return Response::json($transaksis);
     }
 
     /**
