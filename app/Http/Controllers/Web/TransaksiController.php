@@ -26,7 +26,7 @@ class TransaksiController extends Controller
         $transaksis = Transaksi::query()
             ->with(['customer.user', 'barangs'])
             ->whereDepoId(Auth::user()->depo->id)
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy('status');
 
@@ -47,6 +47,7 @@ class TransaksiController extends Controller
         $kurirs = Kurir::query()
             ->with('user')
             ->where('depo_id', Auth::user()->depo->id)
+            ->where('status', 'Idle')
             ->get();
 
         return View::make('transaksi.edit', compact('transaksi', 'kurirs'));
@@ -88,6 +89,9 @@ class TransaksiController extends Controller
 
             if ($request->aksi == 'Diproses') {
                 $transaksi->update(['kurir_id' => $request->kurir]);
+                $transaksi->kurir()->update([
+                    'status' => 'Mengirim'
+                ]);
 
                 foreach ($transaksi->barangs as $barang) {
                     $barangDepo = collect($depo->barangs)->firstWhere('id', $barang->id);

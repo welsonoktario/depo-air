@@ -133,19 +133,25 @@ class TransaksiController extends Controller
         $ulasan = $request->ulasan;
         $update = $transaksi->when(
             $ulasan,
-            fn ($q) => $transaksi->update([
+            fn () => $transaksi->update([
                 'status' => $request->status,
                 'ulasan' => $ulasan
             ]),
-            fn ($q) => $transaksi->update([
+            fn () => $transaksi->update([
                 'status' => $request->status
             ])
         );
 
+        if ($request->status === 'Dikirim') {
+            $transaksi->kurir()->update([
+                'status' => 'Idle'
+            ]);
+        }
+
         if (!$update) {
             return Response::json([
                 'status' => 'GAGAL',
-                'msg' => 'Terjadi kesalahan mengirim bukti pembayaran'
+                'msg' => 'Terjadi kesalahan sistem. Silahkan coba lagi nanti'
             ], 500);
         }
 
