@@ -21,7 +21,6 @@ return new class extends Migration {
                 ->cascadeOnDelete();
             $table->integer('stok')
                 ->default(0);
-            $table->softDeletes();
         });
     }
 
