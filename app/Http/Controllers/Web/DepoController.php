@@ -159,6 +159,7 @@ class DepoController extends Controller
 
         try {
             $depo->user()->delete();
+            $depo->delete();
 
             DB::commit();
 

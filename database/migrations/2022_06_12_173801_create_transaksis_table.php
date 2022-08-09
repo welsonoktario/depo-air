@@ -31,6 +31,7 @@ return new class extends Migration {
                 ->default('Menunggu Pembayaran');
             $table->string('bukti_pembayaran')->nullable();
             $table->string('ulasan')->nullable();
+            $table->string('alasan_pembatalan')->nullable();
             $table->timestamps();
         });
     }

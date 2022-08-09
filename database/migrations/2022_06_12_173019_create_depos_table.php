@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->enum('tipe_cabang', ['Cabang Utama', 'Cabang Pembantu'])
                 ->default('Cabang Pembantu');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
