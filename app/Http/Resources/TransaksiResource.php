@@ -24,9 +24,10 @@ class TransaksiResource extends JsonResource
             ],
             'buktiPembayaran' => $this->bukti_pembayaran,
             'ulasan' => $this->ulasan,
+            'alasanPembatalan' => $this->alasan_pembatalan,
             'depo' => DepoResource::make($this->whenLoaded('depo')),
             'kurir' => KurirResource::make($this->whenLoaded('kurir')),
-            'details' => KeranjangCollection::make($this->whenLoaded('barangs'))
+            'details' => KeranjangCollection::make($this->whenLoaded('barangs')),
         ];
     }
 }

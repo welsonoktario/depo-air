@@ -83,9 +83,16 @@ class TransaksiController extends Controller
         try {
             DB::beginTransaction();
 
-            tap($transaksi)->update([
-                'status' => $request->aksi,
-            ]);
+            if ($request->aksi == 'Batal') {
+                tap($transaksi)->update([
+                    'status' => $request->aksi,
+                    'alasan_pembatalan' => $request->alasan,
+                ]);
+            } else {
+                tap($transaksi)->update([
+                    'status' => $request->aksi,
+                ]);
+            }
 
             if ($request->aksi == 'Diproses') {
                 $transaksi->update(['kurir_id' => $request->kurir]);

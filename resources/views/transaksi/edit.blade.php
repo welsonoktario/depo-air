@@ -80,21 +80,37 @@
 
           <template x-if="transaksi.status == 'Menunggu Konfirmasi'">
             <div class="inline-flex w-full mt-6">
-              <x-button class="mr-2 bg-rose-600" type="button" @click="proses('Batal')">Batal</x-button>
+              <x-button class="mr-2 bg-rose-600" type="button" @click="open = true">Batal</x-button>
               <x-button type="button" @click="proses('Diproses')">Proses</x-button>
             </div>
           </template>
         </div>
       </div>
     </div>
+
+    <x-modal id="open" title="Tolak Transaksi">
+      <x-slot:content>
+        <x-label>
+          Masukkan alasan penolakan transaksi:
+        </x-label>
+        <x-input placeholder="Alasan penolakan" type="text" x-model="alasan" />
+      </x-slot:content>
+
+      <x-slot:footer>
+        <x-button class="mr-2 bg-rose-600" type="button" @click="batalTransaksi()">Batal</x-button>
+        <x-button>Kembali</x-button>
+      </x-slot:footer>
+    </x-modal>
   </div>
 
   @push('scripts')
     <script>
       Alpine.data("detail", () => ({
+        open: false,
         transaksi: {{ Js::from($transaksi) }},
         kurirs: {{ Js::from($kurirs) }},
         kurir: null,
+        alasan: "",
         async proses(aksi) {
           if (aksi != 'Batal') {
             if (!this.kurir || this.kurir == 'null') {
@@ -132,6 +148,33 @@
           if (aksi == 'Diproses') {
             const k = this.kurirs.find(ku => ku.id == this.kurir);
             this.transaksi.kurir = k
+          }
+        },
+        async batalTransaksi() {
+          const url = route("transaksi.update", {
+            transaksi: this.transaksi.id,
+          });
+          const res = await fetch(url, {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": "{{ csrf_token() }}",
+            },
+            method: "PATCH",
+            body: JSON.stringify({
+              aksi: 'Batal',
+              alasan: this.alasan,
+            }),
+          });
+          const {
+            status
+          } = await res.json();
+
+          if (status == "OK") {
+            this.transaksi.status = 'Batal';
+            this.alasan = '';
+            this.open = false;
           }
         },
         tanggal() {
