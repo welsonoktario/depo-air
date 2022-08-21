@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\API\TransaksiController as APITransaksiController;
 use App\Http\Controllers\Web\BarangController;
 use App\Http\Controllers\Web\CustomerController;
 use Illuminate\Support\Facades\Route;
@@ -30,9 +29,11 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/test', [TransaksiController::class, 'index']);
-
     Route::resource('inventori', InventoriController::class)->parameter('inventori', 'barang');
+
+    Route::controller(TransaksiController::class)->group(function () {
+        Route::post('/transaksi/checkout', 'checkout')->name('transaksi.checkout');
+    });
 
     Route::resources([
         'customer' => CustomerController::class,

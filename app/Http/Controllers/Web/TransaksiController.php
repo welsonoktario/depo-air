@@ -10,6 +10,7 @@ use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 use Throwable;
@@ -30,9 +31,22 @@ class TransaksiController extends Controller
             ->get()
             ->groupBy('status');
 
-        return View::make('transaksi.index', compact('transaksis'));
+        if ($transaksis->has('Menunggu Konfirmasi')) {
+            $transaksis['Menunggu Konfirmasi'] = collect($transaksis['Menunggu Konfirmasi'])->map(function ($transaksi) {
+                $tmp = $transaksi;
+                $tmp['selected'] = false;
 
-        // return Response::json($transaksis);
+                return $tmp;
+            });
+        }
+
+        $kurirs = Kurir::query()
+            ->with('user')
+            ->where('depo_id', Auth::user()->depo->id)
+            ->where('status', 'Idle')
+            ->get();
+
+        return View::make('transaksi.index', compact('transaksis', 'kurirs'));
     }
 
     /**
@@ -119,5 +133,36 @@ class TransaksiController extends Controller
         broadcast(new TransaksiUpdated($transaksi))->toOthers();
 
         return Response::json(['status' => 'OK']);
+    }
+
+    public function checkout(Request $request)
+    {
+        $transaksis = Transaksi::query()
+            ->whereIn('id', $request->transaksis)
+            ->get();
+        $kurir = Kurir::query()->find($request->kurir);
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($transaksis as $transaksi) {
+                $transaksi->update([
+                    'kurir_id' => $kurir->id,
+                    'status' => 'Diproses'
+                ]);
+            }
+
+            $kurir->update([
+                'status' => 'Mengirim'
+            ]);
+
+            DB::commit();
+
+            return Response::json(['status' => 'ok'], 200);
+        } catch (Throwable $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return Response::json(['status' => 'err', 'msg' => $e->getMessage()], 500);
+        }
     }
 }

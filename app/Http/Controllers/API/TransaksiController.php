@@ -130,25 +130,37 @@ class TransaksiController extends Controller
      */
     public function update(Request $request, Transaksi $transaksi)
     {
+        $kurir = $transaksi->kurir;
         $ulasan = $request->ulasan;
-        $update = $transaksi->when(
-            $ulasan,
-            fn () => $transaksi->update([
-                'status' => $request->status,
-                'ulasan' => $ulasan
-            ]),
-            fn () => $transaksi->update([
-                'status' => $request->status
-            ])
-        );
 
-        if ($request->status === 'Dikirim') {
-            $transaksi->kurir()->update([
-                'status' => 'Idle'
-            ]);
-        }
+        DB::beginTransaction();
 
-        if (!$update) {
+        try {
+            $transaksi->when(
+                $ulasan,
+                fn () => $transaksi->update([
+                    'status' => $request->status,
+                    'ulasan' => $ulasan
+                ]),
+                fn () => $transaksi->update([
+                    'status' => $request->status
+                ])
+            );
+
+            $trxKurir = $kurir->transaksis()
+                ->where('status', 'Diproses')
+                ->get();
+
+            if ($trxKurir->count() === 0) {
+                $kurir->update([
+                    'status' => 'Idle'
+                ]);
+            }
+
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+
             return Response::json([
                 'status' => 'GAGAL',
                 'msg' => 'Terjadi kesalahan sistem. Silahkan coba lagi nanti'

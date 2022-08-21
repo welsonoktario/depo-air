@@ -21,6 +21,8 @@ return new class extends Migration {
                 ->constrained()
                 ->cascadeOnDelete();
             $table->text('alamat');
+            $table->enum('status', ['Idle', 'Mengirim'])
+                ->default('Idle');
             $table->timestamps();
         });
     }
