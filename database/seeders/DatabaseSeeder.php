@@ -13,9 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        \App\Models\User::query()->create([
+            'nama' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('123'),
+            'telepon' => '081234567890',
+            'role' => 'Super Admin'
+        ]);
+
         \App\Models\Barang::factory(10)->create();
-        \App\Models\Depo::factory(5)->create();
-        \App\Models\Customer::factory(10)->create();
-        \App\Models\Kurir::factory(5)->create();
+        \App\Models\Depo::factory(3)->create();
+        \App\Models\Customer::factory(5)->create();
     }
 }
