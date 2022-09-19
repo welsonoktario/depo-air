@@ -137,6 +137,9 @@ class TransaksiController extends Controller
 
     public function checkout(Request $request)
     {
+        $depo = Depo::with('barangs')
+            ->where('user_id', Auth::id())
+            ->first();
         $transaksis = Transaksi::query()
             ->whereIn('id', $request->transaksis)
             ->get();
@@ -150,6 +153,14 @@ class TransaksiController extends Controller
                     'kurir_id' => $kurir->id,
                     'status' => 'Diproses'
                 ]);
+
+                foreach ($transaksi->barangs as $barang) {
+                    $barangDepo = collect($depo->barangs)->firstWhere('id', $barang->id);
+
+                    $depo->barangs()->sync([
+                        $barang->id => ['stok' => $barangDepo->pivot->stok - $barang->pivot->jumlah]
+                    ], false);
+                }
             }
 
             $kurir->update([
