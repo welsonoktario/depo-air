@@ -127,7 +127,6 @@ class DepoController extends Controller
             $depo->update([
                 'nama' => $request->depo_nama,
                 'alamat' => $request->depo_alamat,
-                'lokasi' => new Point($request->depo_lokasi_lat, $request->depo_lokasi_long),
                 'tipe' => $request->depo_tipe,
             ]);
 

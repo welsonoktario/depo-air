@@ -16,7 +16,7 @@
   <div x-data="depo" class="py-12">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div class="overflow-hidden bg-white dark:bg-zinc-700 shadow-sm sm:rounded-lg">
-        <form class="p-6 bg-white dark:bg-zinc-800" action="{{ route('depo.update', $depo->id) }}"
+        <form id="editForm" class="p-6 bg-white dark:bg-zinc-800" action="{{ route('depo.update', $depo->id) }}"
           method="POST">
           @csrf
           @method('PATCH')
@@ -60,13 +60,15 @@
           </div>
 
           <div class="inline-flex justify-between w-full mt-3">
-            <form action="{{ route('depo.destroy', $depo->id) }}" method="POST">
-              @method('DELETE')
-              @csrf
-              <x-button class="bg-rose-600 hover:bg-rose-500">Hapus</x-button>
-            </form>
-            <x-button class="bg-indigo-600 hover:bg-indigo-500">Simpan</x-button>
+            <input type="submit" form="deleteForm" value="Hapus"
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 bg-rose-600 hover:bg-rose-500" />
+            <input type="submit" form="editForm" value="Simpan"
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150 bg-indigo-600 hover:bg-indigo-500" />
           </div>
+        </form>
+        <form id="deleteForm" action="{{ route('depo.destroy', $depo->id) }}" method="POST">
+          @method('DELETE')
+          @csrf
         </form>
       </div>
     </div>
