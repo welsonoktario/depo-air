@@ -1,0 +1,9 @@
+/*!
+ * Pusher JavaScript Library v7.1.1-beta
+ * https://pusher.com/
+ *
+ * Copyright 2020, Pusher
+ * Released under the MIT licence.
+ */
+
+/*! http://mths.be/base64 v0.1.0 by @mathias | MIT license */
