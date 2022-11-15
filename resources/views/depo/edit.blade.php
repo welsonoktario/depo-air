@@ -1,6 +1,6 @@
 <x-app-layout>
   @push('styles')
-    <link rel="stylesheet" href="{{ secure_asset(mix('css/mapbox.css')) }}">
+    <link rel="stylesheet" href="https://amidis.herokuapp.com/css/mapbox.css">
   @endpush
 
   <x-slot name="header">
