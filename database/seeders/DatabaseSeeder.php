@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'Super Admin'
         ]);
 
-        \App\Models\Depo::factory(3)->create();
-        \App\Models\Customer::factory(5)->create();
+        // \App\Models\Depo::factory(3)->create();
+        // \App\Models\Customer::factory(5)->create();
     }
 }
