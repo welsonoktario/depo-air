@@ -13,7 +13,7 @@
     href="https://fonts.googleapis.com/css2?family=Karla:wght@200;300;400;500;600;700;800&display=swap">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="https://amidis.herokuapp.com/css/app.css">
+  <link rel="stylesheet" href="{{ mix('css/app.css') }}">
   @stack('styles')
 </head>
 
@@ -35,9 +35,9 @@
   </div>
 
   @routes
-  <script src="https://amidis.herokuapp.com/js/manifest.js"></script>
-  <script src="https://amidis.herokuapp.com/js/vendor.js"></script>
-  <script src="https://amidis.herokuapp.com/js/app.js"></script>
+  <script src="{{ mix('js/manifest.js') }}"></script>
+  <script src="{{ mix('js/vendor.js') }}"></script>
+  <script src="{{ mix('js/app.js') }}"></script>
   @stack('scripts')
 </body>
 
