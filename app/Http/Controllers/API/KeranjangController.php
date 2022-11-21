@@ -5,11 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\KeranjangCollection;
 use App\Models\Barang;
-use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Response;
+use Illuminate\Support\Facades\Response;
 use Throwable;
 
 class KeranjangController extends Controller
@@ -56,6 +56,9 @@ class KeranjangController extends Controller
 
             DB::commit();
         } catch (Throwable $e) {
+            Log::error($e->getMessage());
+            DB::rollBack();
+
             return abort(500, $e->getMessage());
         }
 
