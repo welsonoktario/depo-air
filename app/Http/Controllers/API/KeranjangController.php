@@ -59,7 +59,10 @@ class KeranjangController extends Controller
             Log::error($e->getMessage());
             DB::rollBack();
 
-            return abort(500, $e->getMessage());
+            return Response::json([
+                'status' => 'GAGAL',
+                'msg' => 'Terjadi kesalahan sistem. Silahkan coba lagi nanti'
+            ], 500);
         }
 
         return Response::json(['msg' => 'OK']);
