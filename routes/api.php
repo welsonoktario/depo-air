@@ -29,7 +29,6 @@ Route::group(['prefix' => 'auth', 'as' => 'api.'], function () {
 Route::group(['middleware' => ['auth:sanctum'], 'as' => 'api.'], function () {
     Route::patch('alamat/{alamat}/utama', [AlamatController::class, 'updateUtama']);
     Route::post('transaksi/{transaksi}/upload', [TransaksiController::class, 'uploadBukti'])->name('transaksi.upload');
-    Route::post('transaksi/keranjang', [TransaksiController::class, 'addToKeranjang']);
 
     Route::apiResource('alamat', AlamatController::class);
     Route::apiResource('barang', BarangController::class);

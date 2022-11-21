@@ -173,31 +173,6 @@ class TransaksiController extends Controller
         ]);
     }
 
-    public function addToKeranjang(Request $request)
-    {
-        $customer = Auth::user()->customer;
-
-        try {
-            DB::beginTransaction();
-
-            $customer->barangs()->sync([
-                $request->barang => ['jumlah' => $request->jumlah],
-            ], false);
-
-            DB::commit();
-        } catch (Throwable $e) {
-            Log::error($e->getMessage());
-            DB::rollBack();
-
-            return Response::json([
-                'status' => 'GAGAL',
-                'msg' => 'Terjadi kesalahan sistem. Silahkan coba lagi nanti'
-            ], 500);
-        }
-
-        return Response::json(['msg' => 'OK']);
-    }
-
     // cari 1 depo terdekat yang stok pesanan mencukupi
     private function findDepo($barangs, $lokasi)
     {
